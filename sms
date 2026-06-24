@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>SMS Sender - WhatsApp Ready</title>
+    <style>
+        /* WhatsApp-Friendly Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #ece5dd;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .whatsapp-container {
+            max-width: 480px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+            overflow: hidden;
+            animation: slideUp 0.4s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* WhatsApp Green Header */
+        .whatsapp-header {
+            background: #00a884;
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .whatsapp-header .icon {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .whatsapp-header h1 {
+            color: white;
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+        }
+
+        .whatsapp-header .subtitle {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 13px;
+            font-weight: 400;
+        }
+
+        /* Message Area - Like WhatsApp Chat Bubble */
+        .chat-area {
+            padding: 24px 20px 16px;
+            background: #f0f2f5;
+        }
+
+        .message-bubble {
+            background: #dcf8c6;
+            padding: 14px 18px;
+            border-radius: 12px 12px 12px 4px;
+            display: inline-block;
+            max-width: 90%;
+            margin-bottom: 4px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+            font-size: 15px;
+            line-height: 1.5;
+            color: #1a1a1a;
+            word-wrap: break-word;
+        }
+
+        .message-time {
+            font-size: 11px;
+            color: #667781;
+            margin-left: 8px;
+        }
+
+        .chat-footer {
+            padding: 16px 20px 20px;
+            background: #ffffff;
+        }
+
+        /* Form Elements - WhatsApp Style */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: #3b4a54;
+            margin-bottom: 6px;
+        }
+
+        .form-group .input-wrapper {
+            display: flex;
+            align-items: center;
+            background: #f0f2f5;
+            border-radius: 12px;
+            padding: 0 14px;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .form-group .input-wrapper:focus-within {
+            border-color: #00a884;
+            background: #ffffff;
+        }
+
+        .form-group .input-wrapper .prefix {
+            color: #667781;
+            font-size: 14px;
+            font-weight: 500;
+            margin-right: 4px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 0;
+            border: none;
+            background: transparent;
+            font-size: 15px;
+            color: #1a1a1a;
+            outline: none;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 44px;
+        }
+
+        .form-group textarea {
+            min-height: 80px;
+            padding: 12px 0;
+            line-height: 1.5;
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: #8b9aa6;
+        }
+
+        /* Character Counter */
+        .char-counter {
+            text-align: right;
+            font-size: 12px;
+            color: #8b9aa6;
+            margin-top: 4px;
+            padding-right: 4px;
+        }
+
+        .char-counter.warning {
+            color: #d32f2f;
+        }
+
+        /* Send Button - WhatsApp Green */
+        .send-btn {
+            width: 100%;
+            padding: 14px;
+            background: #00a884;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            letter-spacing: 0.3px;
+        }
+
+        .send-btn:hover:not(:disabled) {
+            background: #008f72;
+            transform: scale(1.01);
+        }
+
+        .send-btn:active:not(:disabled) {
+            transform: scale(0.97);
+        }
+
+        .send-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .send-btn .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+
+        .send-btn.loading .spinner {
+            display: inline-block;
+        }
+
+        .send-btn.loading .btn-text {
+            display: none;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Status Messages - WhatsApp Style */
+        .status-container {
+            margin-top: 12px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 14px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-container.success {
+            display: flex;
+            background: #e8f5e9;
+            color: #1b5e20;
+            border-left: 4px solid #43a047;
+        }
+
+        .status-container.error {
+            display: flex;
+            background: #ffebee;
+            color: #b71c1c;
+            border-left: 4px solid #e53935;
+        }
+
+        .status-container.info {
+            display: flex;
+            background: #e3f2fd;
+            color: #0d47a1;
+            border-left: 4px solid #1e88e5;
+        }
+
+        .status-icon {
+            font-size: 20px;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .quick-btn {
+            padding: 6px 14px;
+            background: #f0f2f5;
+            border: none;
+            border-radius: 20px;
+            font-size: 13px;
+            color: #3b4a54;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-weight: 500;
+        }
+
+        .quick-btn:hover {
+            background: #e0e3e7;
+        }
+
+        .quick-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Responsive */
+        @media (max-width: 500px) {
+            .whatsapp-container {
+                border-radius: 16px;
+            }
+
+            .whatsapp-header {
+                padding: 16px 18px;
+            }
+
+            .whatsapp-header h1 {
+                font-size: 18px;
+            }
+
+            .chat-area {
+                padding: 16px 14px 12px;
+            }
+
+            .chat-footer {
+                padding: 12px 14px 16px;
+            }
+
+            .message-bubble {
+                font-size: 14px;
+                padding: 12px 14px;
+            }
+        }
+
+        /* Dark Mode Support */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: #1a1a1a;
+            }
+
+            .whatsapp-container {
+                background: #2d2d2d;
+            }
+
+            .chat-area {
+                background: #262626;
+            }
+
+            .message-bubble {
+                background: #3a6b4a;
+                color: #e8e8e8;
+            }
+
+            .chat-footer {
+                background: #2d2d2d;
+            }
+
+            .form-group .input-wrapper {
+                background: #3a3a3a;
+            }
+
+            .form-group .input-wrapper:focus-within {
+                background: #3a3a3a;
+                border-color: #00a884;
+            }
+
+            .form-group input,
+            .form-group textarea {
+                color: #e8e8e8;
+            }
+
+            .form-group label {
+                color: #aab8c2;
+            }
+
+            .form-group .input-wrapper .prefix {
+                color: #8b9aa6;
+            }
+
+            .quick-btn {
+                background: #3a3a3a;
+                color: #aab8c2;
+            }
+
+            .quick-btn:hover {
+                background: #4a4a4a;
+            }
+
+            .message-time {
+                color: #8b9aa6;
+            }
+
+            .status-container.success {
+                background: #1b3a1b;
+                color: #a5d6a7;
+            }
+
+            .status-container.error {
+                background: #3a1b1b;
+                color: #ef9a9a;
+            }
+
+            .status-container.info {
+                background: #1b2a3a;
+                color: #90caf9;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="whatsapp-container">
+        <!-- WhatsApp-Style Header -->
+        <div class="whatsapp-header">
+            <div class="icon">💬</div>
+            <div>
+                <h1>SMS Sender</h1>
+                <div class="subtitle">via Google Apps Script</div>
+            </div>
+        </div>
+
+        <!-- Chat Area with Example Message -->
+        <div class="chat-area">
+            <div class="message-bubble">
+                📱 Send SMS messages directly from here
+                <div class="message-time">Just now</div>
+            </div>
+        </div>
+
+        <!-- Input Form -->
+        <div class="chat-footer">
+            <form id="smsForm" onsubmit="sendSMS(event)">
+                <div class="form-group">
+                    <label for="phoneNumber">📞 Phone Number</label>
+                    <div class="input-wrapper">
+                        <span class="prefix">+</span>
+                        <input
+                            type="tel"
+                            id="phoneNumber"
+                            placeholder="Country code + number (e.g., 1234567890)"
+                            value="1234567890"
+                            required
+                        />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="messageText">✏️ Message</label>
+                    <div class="input-wrapper">
+                        <textarea
+                            id="messageText"
+                            placeholder="Type your message here..."
+                            maxlength="160"
+                            required
+                            oninput="updateCharCount()"
+                        >Hello! This is a test message from my WhatsApp-friendly SMS sender. 📱</textarea>
+                    </div>
+                    <div class="char-counter" id="charCounter">0 / 160</div>
+                </div>
+
+                <!-- Quick Message Buttons -->
+                <div class="quick-actions">
+                    <button type="button" class="quick-btn" onclick="setQuickMessage('Hi! Just checking in. 👋')">👋 Hi</button>
+                    <button type="button" class="quick-btn" onclick="setQuickMessage('On my way! 🚗')">🚗 On my way</button>
+                    <button type="button" class="quick-btn" onclick="setQuickMessage('See you soon! 😊')">😊 See you</button>
+                    <button type="button" class="quick-btn" onclick="setQuickMessage('Thank you! 🙏')">🙏 Thanks</button>
+                </div>
+
+                <!-- Send Button -->
+                <button type="submit" class="send-btn" id="sendBtn">
+                    <span class="btn-text">📤 Send Message</span>
+                    <span class="spinner"></span>
+                </button>
+
+                <!-- Status Message -->
+                <div class="status-container" id="statusContainer">
+                    <span class="status-icon" id="statusIcon"></span>
+                    <span id="statusText">Status message</span>
+                </div>
+            </form>
+
+            <!-- Footer Note -->
+            <div style="text-align: center; margin-top: 12px; font-size: 12px; color: #8b9aa6;">
+                🔒 Messages are sent securely via Google Apps Script
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // CONFIGURATION
+        // ============================================
+        const CONFIG = {
+            // Your Google Apps Script Web App URL
+            // GET THIS FROM: Publish > Deploy as web app
+            WEB_APP_URL: 'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec',
+            
+            // Default values
+            DEFAULT_PHONE: '1234567890',
+            DEFAULT_MESSAGE: 'Hello! This is a test message from my WhatsApp-friendly SMS sender. 📱'
+        };
+
+        // ============================================
+        // DOM ELEMENTS
+        // ============================================
+        const form = document.getElementById('smsForm');
+        const phoneInput = document.getElementById('phoneNumber');
+        const messageInput = document.getElementById('messageText');
+        const sendBtn = document.getElementById('sendBtn');
+        const statusContainer = document.getElementById('statusContainer');
+        const statusIcon = document.getElementById('statusIcon');
+        const statusText = document.getElementById('statusText');
+        const charCounter = document.getElementById('charCounter');
+
+        // ============================================
+        // CHARACTER COUNTER
+        // ============================================
+        function updateCharCount() {
+            const count = messageInput.value.length;
+            const max = messageInput.maxLength;
+            charCounter.textContent = `${count} / ${max}`;
+            
+            if (count > max * 0.9) {
+                charCounter.classList.add('warning');
+            } else {
+                charCounter.classList.remove('warning');
+            }
+        }
+
+        // ============================================
+        // QUICK MESSAGE BUTTONS
+        // ============================================
+        function setQuickMessage(text) {
+            messageInput.value = text;
+            updateCharCount();
+            messageInput.focus();
+        }
+
+        // ============================================
+        // SET STATUS
+        // ============================================
+        function setStatus(type, icon, message) {
+            statusContainer.className = 'status-container';
+            statusContainer.classList.add(type);
+            statusIcon.textContent = icon;
+            statusText.textContent = message;
+            statusContainer.style.display = 'flex';
+        }
+
+        function clearStatus() {
+            statusContainer.style.display = 'none';
+            statusContainer.className = 'status-container';
+        }
+
+        // ============================================
+        // SET LOADING STATE
+        // ============================================
+        function setLoading(isLoading) {
+            if (isLoading) {
+                sendBtn.classList.add('loading');
+                sendBtn.disabled = true;
+                clearStatus();
+            } else {
+                sendBtn.classList.remove('loading');
+                sendBtn.disabled = false;
+            }
+        }
+
+        // ============================================
+        // SEND SMS FUNCTION
+        // ============================================
+        async function sendSMS(event) {
+            event.preventDefault();
+
+            // Validate
+            const phone = phoneInput.value.trim();
+            const message = messageInput.value.trim();
+
+            if (!phone) {
+                setStatus('error', '❌', 'Please enter a phone number');
+                phoneInput.focus();
+                return;
+            }
+
+            if (!message) {
+                setStatus('error', '❌', 'Please enter a message');
+                messageInput.focus();
+                return;
+            }
+
+            if (message.length > 160) {
+                setStatus('error', '❌', 'Message exceeds 160 characters limit');
+                return;
+            }
+
+            // Prepare data
+            const data = {
+                phone: phone,
+                message: message
+            };
+
+            setLoading(true);
+            setStatus('info', '⏳', 'Sending your message...');
+
+            try {
+                const response = await fetch(CONFIG.WEB_APP_URL, {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    setStatus('success', '✅', `Message sent successfully to +${phone}!`);
+                    // Optional: Clear message after successful send
+                    // messageInput.value = '';
+                    // updateCharCount();
+                } else {
+                    setStatus('error', '❌', `Failed: ${result.error || 'Unknown error'}`);
+                }
+
+            } catch (error) {
+                console.error('Send error:', error);
+                setStatus('error', '❌', `Error: ${error.message || 'Network error'}`);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        // ============================================
+        // VALIDATE PHONE INPUT (Only digits)
+        // ============================================
+        phoneInput.addEventListener('input', function() {
+            // Allow only digits and +
+            this.value = this.value.replace(/[^0-9+]/g, '');
+        });
+
+        // ============================================
+        // AUTO-FOCUS ON PHONE ON MOBILE
+        // ============================================
+        if ('ontouchstart' in window) {
+            setTimeout(() => phoneInput.focus(), 500);
+        }
+
+        // ============================================
+        // INITIALIZE
+        // ============================================
+        // Set default values
+        if (!phoneInput.value || phoneInput.value === '') {
+            phoneInput.value = CONFIG.DEFAULT_PHONE;
+        }
+        if (!messageInput.value || messageInput.value === '') {
+            messageInput.value = CONFIG.DEFAULT_MESSAGE;
+        }
+        updateCharCount();
+
+        console.log('📱 WhatsApp SMS Sender ready!');
+        console.log(`📤 Web App URL: ${CONFIG.WEB_APP_URL}`);
+        
+        // ============================================
+        // TEST CONNECTION (Optional)
+        // ============================================
+        // Uncomment to test connection on load
+        /*
+        async function testConnection() {
+            try {
+                const response = await fetch(CONFIG.WEB_APP_URL, {
+                    method: 'GET'
+                });
+                const result = await response.json();
+                console.log('✅ Connection test:', result);
+            } catch (e) {
+                console.warn('⚠️ Cannot connect to Web App:', e.message);
+            }
+        }
+        testConnection();
+        */
+    </script>
+
+</body>
+</html>
