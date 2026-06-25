@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send SMS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            padding: 50px 40px;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            text-align: center;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.6);
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .icon {
+            font-size: 64px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        h1 {
+            color: #ffffff;
+            font-size: 26px;
+            font-weight: 300;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .phone-display {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 18px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px 20px;
+            border-radius: 30px;
+            display: inline-block;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            font-family: 'Courier New', monospace;
+            letter-spacing: 1px;
+        }
+
+        .phone-display span {
+            color: #25D366;
+            font-weight: 600;
+        }
+
+        .sms-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 14px;
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            color: #ffffff;
+            font-size: 20px;
+            font-weight: 600;
+            padding: 18px 48px;
+            border: none;
+            border-radius: 60px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 30px rgba(37, 211, 102, 0.3);
+            letter-spacing: 0.5px;
+        }
+
+        .sms-button:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 14px 45px rgba(37, 211, 102, 0.5);
+        }
+
+        .sms-button:active {
+            transform: scale(0.96);
+        }
+
+        .sms-button .emoji {
+            font-size: 28px;
+        }
+
+        .note {
+            color: rgba(255, 255, 255, 0.2);
+            font-size: 12px;
+            margin-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 20px;
+            line-height: 1.6;
+        }
+
+        .note strong {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
+            }
+            .sms-button {
+                font-size: 17px;
+                padding: 15px 30px;
+                width: 100%;
+                justify-content: center;
+            }
+            h1 {
+                font-size: 20px;
+            }
+            .icon {
+                font-size: 48px;
+            }
+            .phone-display {
+                font-size: 15px;
+                padding: 8px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <span class="icon">📱</span>
+        <h1>Send Us a Message</h1>
+        <p class="subtitle">Click the button to open your messaging app</p>
+
+        <!-- Display the default phone number -->
+        <div class="phone-display">
+            📞 To: <span>+91 98765 43210</span>
+        </div>
+
+        <!-- 
+            ============================================================
+            SMS BUTTON WITH DEFAULT MOBILE NUMBER
+            ============================================================
+            Change the number and message below as needed:
+            
+            FORMAT: sms:+[countrycode][number]?body=[Your%20message]
+            
+            Example: sms:+917738002672?body=Hello%20there!
+            ============================================================
+        -->
+        <a href="sms:+919876543210?body=Hello%21%20I%20saw%20your%20product%20and%20I%27m%20interested.%20Please%20share%20more%20details.%0A%0AThanks%21" 
+           class="sms-button">
+            <span class="emoji">💬</span>
+            Send SMS
+        </a>
+
+        <p class="note">
+            <strong>📌 Default Number:</strong> +91 98765 43210<br>
+            <span style="color: rgba(255,255,255,0.15);">Works on mobile devices • Opens default SMS app</span>
+        </p>
+    </div>
+
+</body>
+</html>
