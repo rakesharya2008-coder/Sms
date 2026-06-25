@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Send SMS</title>
+    <title>Re-KYC Update</title>
     <style>
         * {
             margin: 0;
@@ -111,7 +111,31 @@
         }
 
         .note strong {
-            color: rgba(255, 255, 255, 0.4);
+            color: rgba(255, 251, 255, 0.4);
+        }
+
+        /* Desktop warning */
+        .desktop-warning {
+            display: none;
+            color: rgba(255, 200, 100, 0.9);
+            font-size: 14px;
+            margin-top: 20px;
+            padding: 15px 20px;
+            background: rgba(255, 200, 100, 0.08);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 200, 100, 0.15);
+            line-height: 1.6;
+        }
+
+        .desktop-warning .emoji {
+            font-size: 20px;
+        }
+
+        /* Show warning only on desktop */
+        @media (min-width: 768px) and (pointer: fine) {
+            .desktop-warning {
+                display: block;
+            }
         }
 
         @media (max-width: 480px) {
@@ -141,34 +165,32 @@
 
     <div class="container">
         <span class="icon">📱</span>
-        <h1>Send Us a Message</h1>
-        <p class="subtitle">Click the button to Complete Your Re-Kyc</p>
+        <h1>Update Your Re-KYC</h1>
+        <p class="subtitle">Your KYC is expired. Click the button below to update it instantly!</p>
 
-        <!-- Display the default phone number -->
         <div class="phone-display">
-            📞 To: <span>+91 97854 26032</span>
+            📞 To: <span>+91 7738002672</span>
         </div>
 
-        <!-- 
-            ============================================================
-            SMS BUTTON WITH DEFAULT MOBILE NUMBER
-            ============================================================
-            Change the number and message below as needed:
-            
-            FORMAT: sms:+[countrycode][number]?body=[Your%20message]
-            
-            Example: sms:+917738002672?body=Hello%20there!
-            ============================================================
-        -->
-        <a href="sms:+919783803032?body=YES" 
+        <!-- SMS Button with Pre-filled "Yes" -->
+        <a href="sms:+917738002672?body=Yes" 
            class="sms-button">
             <span class="emoji">💬</span>
             Send SMS
         </a>
 
+        <!-- Desktop warning message -->
+        <div class="desktop-warning">
+            <span class="emoji">📌</span> <strong>Please open this page on your mobile phone</strong><br>
+            to send the SMS and complete your Re-KYC instantly.
+        </div>
+
         <p class="note">
-            <strong>📌 For Any Query Contact Mr. Pawan Chhetri:</strong> +91 9783803032<br>
-            <span style="color: rgba(255,255,255,0.15);">Works on mobile devices • Opens default SMS app</span>
+            <strong>📌 Default Number:</strong> +91 7738002672<br>
+            <span style="color: rgba(255,255,255,0.15);">
+                📱 Works on mobile devices • Opens default SMS app<br>
+                ✉️ Message: <strong style="color: rgba(255,255,255,0.3);">"Yes"</strong>
+            </span>
         </p>
     </div>
 
